@@ -1,0 +1,28 @@
+<%- include('partials/header.ejs') %>
+
+    <main>
+        <aside class="side-bar">
+            <a href="/">Home 🏠</a>
+            <a href="/favorites">Favorites <span style="color: red;">❤︎</span></a>
+            <a href="/deleted">Deleted 🗑</a>
+        </aside>
+        <div class="posts">
+            <div class="pbox">
+                <div class="datehead">
+                    <div class="date">
+                        <p style="font-size: 1.5rem;">Edit Quote</p>
+                    </div>
+                </div>
+                <div class="quote">
+                    <form action="/edit/<%= post.id %>" method="POST">
+                        <textarea name="content"
+                            style="height: 150px; background-color: transparent; border: none; outline: none;"
+                            required><%= post.content %></textarea>
+                        <button type="submit" style="border-radius: 5px; height: 30px;">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer.ejs') %>

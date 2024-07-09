@@ -1,0 +1,97 @@
+<%- include('partials/header.ejs') %>
+
+    <main>
+        <aside class="side-bar">
+            <a href="/" class="<%= isHomePage ? 'active' : '' %>">Home 🏠</a>
+            <a href="/favorites" class="<%= favorites ? 'active' : '' %>">Favorites <span
+                    style="color: red;">❤︎</span></a>
+            <a href="/deleted" class="<%= deleted ? 'active' : '' %>">Deleted 🗑</a>
+        </aside>
+        <div class="posts">
+            <% if (isHomePage) { %>
+                <div class="pbox">
+                    <div class="datehead">
+                        <div class="date">
+                            <p style="font-size: 1.5rem;">Add a new quote</p>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        <form action="/submit" method="POST">
+                            <input type="text" name="userPost" placeholder="Share yours with us..."
+                                style="outline: none;" class="quote i" required>
+                        </form>
+                    </div>
+                </div>
+                <% } %>
+
+                    <% posts.forEach((post, index)=> { %>
+                        <div class="pbox">
+                            <div class="datehead">
+                                <div class="date">
+                                    <p style="font-size: 1.5rem;">
+                                        <% if (!deleted) { %>
+                                            <% const now=new Date(); %>
+                                                <% const sixHoursAgo=new Date(now.getTime() - 6 * 60 * 60 * 1000); %>
+                                                    <% const yesterday=new Date(now.getTime() - 24 * 60 * 60 * 1000); %>
+                                                        <% if (index===0) { %>
+                                                            <%= post.timestamp ? post.timestamp.toLocaleString()
+                                                                : 'No timestamp available' %>
+                                                                <% } else if (index===1) { %>
+                                                                    <%= sixHoursAgo.toLocaleString() %>
+                                                                        <% } else if (index===2) { %>
+                                                                            <%= yesterday.toLocaleString() %>
+                                                                                <% } else { %>
+                                                                                    Older posts
+                                                                                    <% } %>
+                                                                                        <% } %>
+                                    </p>
+                                </div>
+                                <% if (!deleted) { %>
+                                    <!-- Conditionally render buttons -->
+                                    <div class="like">
+                                        <% if (!favorites) { %>
+                                            <button
+                                                class="like-btn <%= favoritePosts.includes(post.id) ? 'liked' : '' %>"
+                                                data-id="<%= post.id %>">
+                                                ❤︎ <%= post.likes %>
+                                            </button>
+                                            <% } %>
+                                                <form action="/delete/<%= post.id %>" method="POST">
+                                                    <button type="submit">🗑</button>
+                                                </form>
+                                                <form action="/edit/<%= post.id %>" method="GET">
+                                                    <button type="submit">✎</button>
+                                                </form>
+                                    </div>
+                                    <% } %>
+                            </div>
+                            <div class="quote">
+                                <p>
+                                    <%= post.content %>
+                                </p>
+                            </div>
+                        </div>
+                        <% }) %>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const postId = this.getAttribute('data-id');
+                    const isLiked = this.classList.contains('liked');
+                    const url = isLiked ? `/unlike/${postId}` : `/like/${postId}`;
+                    fetch(url, { method: 'POST' })
+                        .then(response => {
+                            if (response.ok) {
+                                this.classList.toggle('liked');
+                            }
+                        });
+                });
+            });
+        });
+    </script>
+
+    <%- include('partials/footer.ejs') %>
