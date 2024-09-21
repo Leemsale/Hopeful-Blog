@@ -168,6 +168,8 @@ main {
 
 footer {
     background-color: rgb(3, 47, 71);
+    color: #fff;
+    
     width: 100%;
     position: absolute;
     bottom: 0;
