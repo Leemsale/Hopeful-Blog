@@ -124,7 +124,7 @@ main {
     margin-right: 20px;
 }
 
-.like button, .like form button {
+.like button, .like form button, .permanent-delete-btn{
     background-color: transparent;
     border: none;
     font-size: 1.5rem;

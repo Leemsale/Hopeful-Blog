@@ -81,6 +81,13 @@ app.get('/deleted', (req, res) => {
     res.render('index.ejs', { posts: deletedPosts, favoritePosts: favoritePosts, isHomePage: false, favorites: false, deleted: true });
 });
 
+// Permanently delete a post from deletedPosts
+app.post('/permanently-delete/:id', (req, res) => {
+    const postId = parseInt(req.params.id);
+    deletedPosts = deletedPosts.filter(post => post.id !== postId); // Remove from deletedPosts array
+    res.redirect('/deleted'); // Refresh the deleted posts view
+});
+
 // Render the edit form
 app.get('/edit/:id', (req, res) => {
     const postId = parseInt(req.params.id);
